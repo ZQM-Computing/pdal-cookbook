@@ -1,16 +1,38 @@
 #!/usr/bin/env bash
-# Run the sort pipeline and verify point count + X ordering.
-# Design-only example: run against PDAL 2.10.0 and compare with the
-# expected output in README.md.
+# Run the sort pipeline and verify point count + monotonic X ordering.
+# Design-only example: run against PDAL 2.10.0 and compare with README.md.
 set -euo pipefail
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$DIR"
+if [[ ! -s synthetic.txt ]]; then
+  python3 ../01-info/generate.py
+  mv ../01-info/synthetic.txt synthetic.txt
+fi
 
 python3 -m json.tool pipeline.json > /dev/null
 pdal pipeline pipeline.json
 
-echo "--- sorted.las count ---"
-pdal info --summary sorted.las | grep -i -m1 "count"
+pdal info --summary sorted.las > sorted-summary.json
+python3 - sorted-summary.json <<'PY'
+import json
+import sys
+payload = json.load(open(sys.argv[1], encoding="utf-8"))
+summary = payload.get("summary", {})
+count = summary.get("num_points", summary.get("count"))
+if count != 12:
+    raise SystemExit(f"Expected 12 sorted points, got {count}")
+print(f"PASS: sorted LAS contains {count} points")
+PY
 
-echo "--- first column (X) of round-tripped output ---"
 pdal translate sorted.las sorted.txt
-awk '{print $1}' sorted.txt | tr '\n' ' '
-echo
+python3 - sorted.txt <<'PY'
+import sys
+from pathlib import Path
+values = [float(line.split()[0]) for line in Path(sys.argv[1]).read_text(encoding="utf-8").splitlines() if line.strip()]
+if len(values) != 12:
+    raise SystemExit(f"Expected 12 X values, got {len(values)}")
+if values != sorted(values):
+    raise SystemExit(f"X values are not monotonically ascending: {values}")
+print(f"PASS: X values are monotonic ({len(values)} points)")
+PY
