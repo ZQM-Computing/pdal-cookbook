@@ -18,17 +18,20 @@ round trip preserves the point count.
 ## Steps
 
 ```bash
+cd examples/01-info
+python3 generate.py
+bash info.sh
+cd ../02-translate
 bash translate.sh
 ```
 
 ## Expected output
 
-- `synthetic.laz` exists after the LAS → LAZ step and is smaller than
-  `synthetic.las` (compression is the point of LAZ; exact ratio is data
-  dependent and is not asserted).
+- `synthetic.laz` is created in this pattern's directory. File size is not
+  asserted because compression ratio depends on the input and writer settings.
 - The LAZ → text step reproduces 12 data rows.
-- `pdal info --summary` on the original LAS and the LAZ report the same point
-  count (12).
+- The script parses the PDAL summary JSON and asserts 12 source points, equal
+  LAS/LAZ point counts, and an equal number of non-empty round-trip text rows.
 
 ## Failure behavior
 
