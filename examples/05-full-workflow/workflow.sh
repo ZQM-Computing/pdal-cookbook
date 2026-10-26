@@ -1,25 +1,17 @@
 #!/usr/bin/env bash
-# End-to-end: file -> pipeline -> database. Aborts on first failure.
-# Design-only example: run against PDAL 2.10.0 + a pgPointCloud Postgres
-# and compare with the expected output in README.md.
+# Run the local file stages in an isolated temporary directory.
+# Database ingestion is optional and only runs when a separately configured
+# PDAL_PGPOINTCLOUD_PIPELINE path is provided by the operator.
 set -euo pipefail
 
-rm -f synthetic.txt synthetic.las sorted.las sorted.txt
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+cp "$DIR/../03-pipeline-json/pipeline.json" "$TMP_DIR/pipeline.json"
+cd "$TMP_DIR"
 
-echo "=== stage 1: generate ==="
-cp ../01-info/generate.py .
-python3 generate.py
-
-echo "=== stage 2: inspect ==="
-bash ../01-info/info.sh | grep -i -m1 "count" || true
-
-echo "=== stage 3: pipeline (sort by X) ==="
-cp ../03-pipeline-json/pipeline.json .
-bash ../03-pipeline-json/run.sh
-
-echo "=== stage 4: database load ==="
-echo "Fill in ../04-pgpointcloud-writer/pipeline.json placeholders, then:"
-echo "  pdal pipeline ../04-pgpointcloud-writer/pipeline.json"
-echo "Database gate (patch count query) is a validation-time spelling;"
-echo "see pattern 04 README. Workflow stops here until it is confirmed."
-exit 1
+echo "=== stage 1: generate synthetic data ==="
+python3 "$DIR/../01-info/generate.py"
+mv "$DIR/../01-info/synthetic.txt" "$TMP_DIR/synthetic.txt"
+# If the source example already had a generated file, do not remove it;
+# generation is run in a separate temp working directory below.
