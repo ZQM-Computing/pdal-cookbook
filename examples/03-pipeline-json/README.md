@@ -1,14 +1,16 @@
 # 03 — Pipeline JSON: Writing and Running PDAL Pipelines
 
 **Design-only — gate 1 target. Not runtime-validated.** This pattern runs a
-three-stage PDAL pipeline from JSON: read text, sort by X, write LAS. Pipeline
+three-stage PDAL pipeline from JSON: read text, sort by X, write LAS. The runner
+copies the pipeline and generates the input in a fresh temporary workspace, so
+running it does not leave generated files in the repository. Pipeline
 JSON is the repeatable form of PDAL work — the same file runs on any machine
 with the same PDAL version.
 
 ## Prerequisites
 
 - PDAL 2.10.0
-- The synthetic cloud from pattern 01 (`synthetic.txt`)
+- Python 3.11+ and PDAL 2.10.0 (the runner generates its own 12-point fixture in a temporary directory)
 - Bash
 
 ## Files
@@ -37,8 +39,8 @@ bash run.sh
   construction with a stage-lookup error; the stage names in `pipeline.json`
   are the PDAL 2.x canonical names — to confirm at validation against PDAL
   2.10.0's stage registry.
-- If the input file is missing, the reader stage fails and no output file is
-  written; the script aborts instead of reporting a stale `sorted.las`.
+- The runner generates the input file before starting PDAL and removes all
+  intermediate outputs on exit; each run starts from a clean workspace.
 
 ## Versions note
 
