@@ -40,10 +40,10 @@ class ExampleInventoryTests(unittest.TestCase):
         import json
         pipeline = json.loads((EXAMPLES / "03-pipeline-json" / "pipeline.json").read_text(encoding="utf-8"))
         self.assertEqual(pipeline["pipeline"][0]["filename"], "synthetic.txt")
-        self.assertIn('"$TMP_DIR/synthetic.txt"', script)
-        self.assertIn('cp "$DIR/pipeline.json" "$TMP_DIR/pipeline.json"', script)
         self.assertEqual(pipeline["pipeline"][-1]["filename"], "sorted.las")
         script = (EXAMPLES / "03-pipeline-json" / "run.sh").read_text(encoding="utf-8")
+        self.assertIn('"$TMP_DIR/synthetic.txt"', script)
+        self.assertIn('cp "$DIR/pipeline.json" "$TMP_DIR/pipeline.json"', script)
         self.assertIn("rows != sorted(rows)", script)
         self.assertIn("count != 12", script)
 
