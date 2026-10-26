@@ -1,19 +1,16 @@
 # 05 — Full Workflow: File → Pipeline → Database
 
-**Design-only — gate 1 target. Not runtime-validated.** This pattern chains
-patterns 01–04 into one end-to-end run: generate a synthetic cloud, inspect it,
-sort it through a pipeline, and load it into pgPointCloud. Any step failing
-aborts the run — a partial workflow is reported as failed, never as done.
+**Design-only — not runtime-validated.** This script runs the local file stages in an isolated temporary directory: generate a synthetic cloud, verify its point count, sort it through the PDAL JSON pipeline, and verify ascending X order. The database stage is skipped unless `PDAL_PGPOINTCLOUD_PIPELINE` points to a separately configured writer pipeline.
 
 ## Prerequisites
 
 - PDAL 2.10.0
-- Postgres with pgPointCloud (pattern 04 prerequisites)
+- Optional: Postgres with pgPointCloud and an operator-configured writer pipeline (pattern 04 prerequisites)
 - Bash
 
 ## Files
 
-- `workflow.sh` — the chain, aborting on first failure
+- `workflow.sh` — isolated local-stage workflow; optionally runs a separately configured database pipeline
 
 ## Steps
 
@@ -25,14 +22,11 @@ bash workflow.sh
 
 - Each stage prints its check: generation (12 points), info (12 points),
   pipeline (12 points, X-sorted), database load (patches present).
-- The run exits 0 only if every stage passes.
-- The final database state matches pattern 04's expected output.
+- The run exits 0 if every stage it executes passes. Without `PDAL_PGPOINTCLOUD_PIPELINE`, it prints an explicit `SKIP` for database ingestion; that does not certify the full database workflow.
 
 ## Failure behavior
 
-- Any stage failing stops the workflow (`set -euo pipefail`); later stages
-  do not run against stale outputs from an earlier run. The script removes
-  its intermediate outputs at start for exactly this reason.
+- Any stage failing stops the workflow (`set -euo pipefail`). Outputs are isolated in a fresh temporary directory and removed on exit; caller files are not deleted.
 - A database-load failure after a successful pipeline run leaves the earlier
   stages' outputs intact but the workflow failed — re-running after fixing
   the database connection re-executes the whole chain, and pattern 04's
