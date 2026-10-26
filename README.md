@@ -15,7 +15,7 @@ A **PDAL cookbook** for point-cloud pipelines, translation, and pgPointCloud ing
 
 ## Repository role and status
 
-**Status:** Active, public — first pattern pass written (design-only, gate 1 target; runtime validation pending). The table below lists what is written; no pattern has been runtime-validated yet.
+**Status:** Active, public — five design-stage examples. CI validates shell syntax, Python compilation, example inventory, and static pipeline/credential-safety contracts. No pattern has been runtime-validated against the fleet PDAL 2.10.0 build or a live pgPointCloud database.
 
 **What this repository is:** PDAL patterns — see the table below.
 
@@ -37,25 +37,28 @@ Geospatial engineers and LiDAR practitioners who move point clouds between files
 
 | # | Example | Status | What it demonstrates |
 |---|---------|--------|----------------------|
-| 01 | [01-info](examples/01-info/README.md) | Written (design-only) | Inspecting point clouds: counts, bounds, dimensions, and SRS |
-| 02 | [02-translate](examples/02-translate/README.md) | Written (design-only) | Translating between LAS, LAZ, and text formats |
-| 03 | [03-pipeline-json](examples/03-pipeline-json/README.md) | Written (design-only) | Writing and running PDAL pipeline JSON files |
-| 04 | [04-pgpointcloud-writer](examples/04-pgpointcloud-writer/README.md) | Written (design-only) | Writing point-cloud patches into pgPointCloud (see pgpointcloud-cookbook) |
-| 05 | [05-full-workflow](examples/05-full-workflow/README.md) | Written (design-only) | End-to-end: file → pipeline → database |
+| 01 | [01-info](examples/01-info/README.md) | Written; runtime pending | Inspecting point clouds: counts, bounds, dimensions, and SRS |
+| 02 | [02-translate](examples/02-translate/README.md) | Written; count assertions added | Translating between LAS, LAZ, and text formats |
+| 03 | [03-pipeline-json](examples/03-pipeline-json/README.md) | Written; sort/count assertions added | Writing and running PDAL pipeline JSON files |
+| 04 | [04-pgpointcloud-writer](examples/04-pgpointcloud-writer/README.md) | Written; environment config added | Writing point-cloud patches into pgPointCloud (see pgpointcloud-cookbook) |
+| 05 | [05-full-workflow](examples/05-full-workflow/README.md) | Local stages asserted; database optional | End-to-end: file → pipeline → database |
 
 ## Repository layout
 
 ```text
 pdal-cookbook/
-├── examples/          # pattern passes, landing in follow-up work
+├── examples/          # five design-stage patterns with explicit runtime gates
+├── tests/             # inventory and pipeline/credential safety contracts
+├── .github/workflows/ # Python/shell/contract CI
 ├── README.md
 └── LICENSE
 ```
 
 ## Roadmap
 
-- First pattern pass: the first two table rows
-- Second pass: the remaining rows, from fleet-verified setups
+- Validate the LAS/LAZ/text round trip and JSON sorting pipeline against PDAL 2.10.0.
+- Verify `writers.pgpointcloud` option names and patch semantics against the fleet extension build.
+- Add a disposable database integration job only after the PostgreSQL/pgPointCloud runtime and safe credentials are available.
 
 ## Contributing
 
@@ -63,6 +66,8 @@ A contributing guide lands with the first pattern pass. Report security issues t
 
 ## More from this series
 
-- [pgpointcloud-cookbook](https://github.com/ZQM-Computing/pgpointcloud-cookbook) — Point-cloud storage in Postgres, PDAL ingest, patch queries
+- [CloudCompare Cookbook](https://github.com/ZQM-Computing/cloudcompare-cookbook) — point-cloud inspection, registration, and comparison
+- [pgPointCloud Cookbook](https://github.com/ZQM-Computing/pgpointcloud-cookbook) — Postgres point-cloud extension setup and patch workflows
+- [GeoServer Cookbook](https://github.com/ZQM-Computing/geoserver-cookbook) — publishing and serving geospatial data[pgpointcloud-cookbook](https://github.com/ZQM-Computing/pgpointcloud-cookbook) — Point-cloud storage in Postgres, PDAL ingest, patch queries
 - [geoserver-cookbook](https://github.com/ZQM-Computing/geoserver-cookbook) — Publishing, styling, federation, and securing OGC services
 - [postgis-cookbook](https://github.com/ZQM-Computing/postgis-cookbook) — Spatial indexing, joins & KNN, SRID management, vector tiles
