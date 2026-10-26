@@ -1,0 +1,24 @@
+name: Example contracts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile example Python and tests
+        run: python -m compileall -q examples tests
+      - name: Run example inventory contracts
+        run: python -m unittest discover -s tests -v
+      - name: Validate shell syntax for every example
+        run: find examples -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
