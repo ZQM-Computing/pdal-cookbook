@@ -27,11 +27,11 @@ The committed `pipeline.json` contains only placeholders. Use `run.sh` to render
 ```bash
 export PGHOST=127.0.0.1 PGDATABASE=gis PGUSER=pdal_writer
 export PGPASSWORD='provide-through-your-secret-manager'
-export PGSCHEMA=pointcloud PGtable=cloud_patches
+export PGSCHEMA=pointcloud PGTABLE=cloud_patches
 bash run.sh
 ```
 
-`PGTABLE` is case-sensitive as an environment variable; use `PGTABLE=cloud_patches` (not `PGtable`). The script requires all connection/schema/table variables and deletes its temporary configured JSON on exit. It does not print the connection string.
+The script requires all connection/schema/table variables and deletes its temporary configured JSON on exit. It does not print the connection string.
 
 ## Expected output
 
