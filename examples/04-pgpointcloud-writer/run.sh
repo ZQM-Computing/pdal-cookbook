@@ -34,7 +34,7 @@ if len(readers) != 1:
 readers[0]["filename"] = os.environ["PDAL_FIXTURE"]
 def conninfo(key, value):
     # libpq conninfo values use single-quoted strings with backslash escaping.
-    escaped = value.replace("\\\\", "\\\\\\\\").replace("'", "\\\\'")
+    escaped = value.replace("\\", "\\\\").replace("'", "\\'")
     return f"{key}='{escaped}'"
 
 writer["connection"] = " ".join((
