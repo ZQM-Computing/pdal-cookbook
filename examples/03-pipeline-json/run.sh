@@ -7,7 +7,6 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
 if [[ ! -s synthetic.txt ]]; then
   python3 ../01-info/generate.py
-  mv ../01-info/synthetic.txt synthetic.txt
 fi
 
 python3 -m json.tool pipeline.json > /dev/null
