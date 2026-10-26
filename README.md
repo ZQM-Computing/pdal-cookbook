@@ -47,15 +47,18 @@ Geospatial engineers and LiDAR practitioners who move point clouds between files
 
 ```text
 pdal-cookbook/
-├── examples/          # pattern passes, landing in follow-up work
+├── examples/          # five design-stage patterns with explicit runtime gates
+├── tests/             # inventory and isolation regression contracts
+├── .github/workflows/ # Python/shell/contract CI
 ├── README.md
 └── LICENSE
 ```
 
 ## Roadmap
 
-- First pattern pass: the first two table rows
-- Second pass: the remaining rows, from fleet-verified setups
+- Run the temporary-workspace file pipeline against the pinned PDAL 2.10.0 runtime.
+- Verify LAZ support and the exact pgPointCloud writer options against the fleet build.
+- Add a disposable PostgreSQL/pgPointCloud integration job once safe database credentials and a supported runtime are available.
 
 ## Contributing
 

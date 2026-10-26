@@ -31,7 +31,7 @@ export PGSCHEMA=pointcloud PGTABLE=cloud_patches
 bash run.sh
 ```
 
-The script requires all connection/schema/table variables and removes its temporary configured JSON on exit. It does not print the connection string.
+The script requires all connection/schema/table variables, generates its synthetic input and configured pipeline inside a temporary directory, and removes both on exit. It does not print the connection string or write generated fixtures into the source tree.
 
 ## Expected output
 
