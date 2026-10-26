@@ -44,7 +44,7 @@ class ExampleInventoryTests(unittest.TestCase):
         script = (EXAMPLES / "03-pipeline-json" / "run.sh").read_text(encoding="utf-8")
         self.assertIn('"$TMP_DIR/synthetic.txt"', script)
         self.assertIn('cp "$DIR/pipeline.json" "$TMP_DIR/pipeline.json"', script)
-        self.assertIn("rows != sorted(rows)", script)
+        self.assertIn("values != sorted(values)", script)
         self.assertIn("count != 12", script)
 
     def test_writer_config_comes_from_environment_and_is_temporary(self):
