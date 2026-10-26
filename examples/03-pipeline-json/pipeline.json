@@ -1,1 +1,1 @@
-{"pipeline":[{"filename":"synthetic.txt","header":"X,Y,Z,Intensity","separator":" ","type":"readers.text"},{"dimension":"X","order":"ASC","type":"filters.sort"},{"filename":"sorted.las","type":"writers.las"}]}
+{"pipeline":[{"filename":"../01-info/synthetic.txt","header":"X,Y,Z,Intensity","separator":" ","type":"readers.text"},{"dimension":"X","order":"ASC","type":"filters.sort"},{"filename":"sorted.las","type":"writers.las"}]}
