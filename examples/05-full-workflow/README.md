@@ -27,10 +27,9 @@ bash workflow.sh
 ## Failure behavior
 
 - Any stage failing stops the workflow (`set -euo pipefail`). Outputs are isolated in a fresh temporary directory and removed on exit; caller files are not deleted.
-- A database-load failure after a successful pipeline run leaves the earlier
-  stages' outputs intact but the workflow failed — re-running after fixing
-  the database connection re-executes the whole chain, and pattern 04's
-  append-vs-replace note applies.
+- A database-load failure stops the workflow. All local intermediate files are
+  removed on exit; check the database state before retrying because a writer
+  may have committed partial data.
 
 ## Versions note / to confirm at validation
 
