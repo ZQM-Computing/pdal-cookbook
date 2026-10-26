@@ -17,6 +17,13 @@ class ExampleInventoryTests(unittest.TestCase):
         actual = {path.name for path in EXAMPLES.iterdir() if path.is_dir()}
         self.assertEqual(actual, EXPECTED)
 
+    def test_translate_pattern_asserts_round_trip_counts(self):
+        script = (EXAMPLES / "02-translate" / "translate.sh").read_text(encoding="utf-8")
+        self.assertIn("las_count != 12", script)
+        self.assertIn("laz_count != las_count", script)
+        self.assertIn("text_rows != las_count", script)
+        self.assertIn("set -euo pipefail", script)
+
     def test_each_pattern_has_documentation_and_artifact(self):
         for name in sorted(EXPECTED):
             with self.subTest(pattern=name):
