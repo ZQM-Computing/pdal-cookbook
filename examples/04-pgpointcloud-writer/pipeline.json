@@ -1,0 +1,1 @@
+{"pipeline":[{"filename":"synthetic.txt","header":"X,Y,Z,Intensity","separator":" ","type":"readers.text"},{"capacity":400,"column":"pa","compression":"dimensional","connection":"host=CHANGEME dbname=CHANGEME user=CHANGEME password=CHANGEME","schema":"CHANGEME","table":"CHANGEME","type":"writers.pgpointcloud"}]}
