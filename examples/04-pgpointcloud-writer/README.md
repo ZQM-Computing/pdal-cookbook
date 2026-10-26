@@ -17,16 +17,21 @@ half of the PDAL → pgPointCloud → GeoServer → TiTiler chain.
 
 ## Files
 
-- `pipeline.json` — readers.text → writers.pgpointcloud (placeholder
-  connection settings)
+- `pipeline.json` — readers.text → writers.pgpointcloud (placeholder settings only)
+- `run.sh` — creates a temporary pipeline config from required `PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `PGSCHEMA`, and `PGTABLE` environment variables
 
 ## Steps
 
+The committed `pipeline.json` contains only placeholders. Use `run.sh` to render a temporary configuration from environment variables; credentials are not written into the repository:
+
 ```bash
-# Set PGCONNECTION (or the writer's connection options) from your environment,
-# fill in the placeholders in pipeline.json, then:
-pdal pipeline pipeline.json
+export PGHOST=127.0.0.1 PGDATABASE=gis PGUSER=pdal_writer
+export PGPASSWORD='provide-through-your-secret-manager'
+export PGSCHEMA=pointcloud PGtable=cloud_patches
+bash run.sh
 ```
+
+`PGTABLE` is case-sensitive as an environment variable; use `PGTABLE=cloud_patches` (not `PGtable`). The script requires all connection/schema/table variables and deletes its temporary configured JSON on exit. It does not print the connection string.
 
 ## Expected output
 
