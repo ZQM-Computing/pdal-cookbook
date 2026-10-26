@@ -10,8 +10,7 @@ cp "$DIR/../03-pipeline-json/pipeline.json" "$TMP_DIR/pipeline.json"
 cd "$TMP_DIR"
 
 echo "=== stage 1: generate synthetic data ==="
-python3 "$DIR/../01-info/generate.py"
-cp "$DIR/../01-info/synthetic.txt" "$TMP_DIR/synthetic.txt"
+python3 "$DIR/../01-info/generate.py" "$TMP_DIR/synthetic.txt"
 
 echo "=== stage 2: verify source points ==="
 pdal translate synthetic.txt synthetic.las \
