@@ -27,11 +27,16 @@ writers = [stage for stage in stages if stage.get("type") == "writers.pgpointclo
 if len(writers) != 1:
     raise SystemExit("Expected exactly one writers.pgpointcloud stage")
 writer = writers[0]
+def conninfo(key, value):
+    # libpq conninfo values use single-quoted strings with backslash escaping.
+    escaped = value.replace("\\\\", "\\\\\\\\").replace("'", "\\\\'")
+    return f"{key}='{escaped}'"
+
 writer["connection"] = " ".join((
-    f"host={os.environ['PGHOST']}",
-    f"dbname={os.environ['PGDATABASE']}",
-    f"user={os.environ['PGUSER']}",
-    f"password={os.environ['PGPASSWORD']}",
+    conninfo("host", os.environ["PGHOST"]),
+    conninfo("dbname", os.environ["PGDATABASE"]),
+    conninfo("user", os.environ["PGUSER"]),
+    conninfo("password", os.environ["PGPASSWORD"]),
 ))
 writer["schema"] = os.environ["PGSCHEMA"]
 writer["table"] = os.environ["PGTABLE"]
