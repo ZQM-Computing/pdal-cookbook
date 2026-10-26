@@ -40,7 +40,7 @@ class ExampleInventoryTests(unittest.TestCase):
         script = (EXAMPLES / "04-pgpointcloud-writer" / "run.sh").read_text(encoding="utf-8")
         for variable in ("PGHOST", "PGDATABASE", "PGUSER", "PGPASSWORD", "PGSCHEMA", "PGTABLE"):
             with self.subTest(variable=variable):
-                self.assertIn(f'"{variable}:?set {variable}"', script)
+                self.assertIn(f"${{{variable}:?set {variable}}}", script)
         self.assertIn("mktemp -d", script)
         self.assertIn("trap 'rm -rf", script)
         self.assertIn("pipeline.configured.json", script)
