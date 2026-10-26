@@ -43,6 +43,26 @@ class ExampleInventoryTests(unittest.TestCase):
         self.assertIn("rows != sorted(rows)", script)
         self.assertIn("count != 12", script)
 
+    def test_writer_config_comes_from_environment_and_is_temporary(self):
+        script = (EXAMPLES / "04-pgpointcloud-writer" / "run.sh").read_text(encoding="utf-8")
+        for variable in ("PGHOST", "PGDATABASE", "PGUSER", "PGPASSWORD", "PGSCHEMA", "PGTABLE"):
+            with self.subTest(variable=variable):
+                self.assertIn(f"${{{variable}:?set {variable}}}", script)
+        self.assertIn("mktemp -d", script)
+        self.assertIn("trap 'rm -rf", script)
+        self.assertIn("pipeline.configured.json", script)
+        self.assertIn("conninfo(", script)
+        self.assertNotIn("echo \"$PGPASSWORD\"", script)
+
+    def test_workflow_is_isolated_and_database_stage_is_explicitly_optional(self):
+        script = (EXAMPLES / "05-full-workflow" / "workflow.sh").read_text(encoding="utf-8")
+        self.assertIn("mktemp -d", script)
+        self.assertIn("trap 'rm -rf", script)
+        self.assertNotIn("rm -f synthetic", script)
+        self.assertIn("PDAL_PGPOINTCLOUD_PIPELINE", script)
+        self.assertIn("SKIP: database stage not run", script)
+        self.assertIn("values != sorted(values)", script)
+
     def test_each_pattern_has_documentation_and_artifact(self):
         for name in sorted(EXPECTED):
             with self.subTest(pattern=name):
