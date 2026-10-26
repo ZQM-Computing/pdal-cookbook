@@ -56,6 +56,7 @@ class ExampleInventoryTests(unittest.TestCase):
         self.assertIn("trap 'rm -rf", script)
         self.assertIn("pipeline.configured.json", script)
         self.assertIn("conninfo(", script)
+        self.assertIn('escaped = value.replace("\\\\", "\\\\\\\\").replace("\'", "\\\\\'")', script)
         self.assertIn('readers[0]["filename"] = os.environ["PDAL_FIXTURE"]', script)
         self.assertIn('generate.py" "$TMP_DIR/synthetic.txt"', script)
         self.assertNotIn('cp ../01-info/synthetic.txt "$DIR/synthetic.txt"', script)
