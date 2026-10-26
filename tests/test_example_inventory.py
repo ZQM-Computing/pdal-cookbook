@@ -27,6 +27,8 @@ class ExampleInventoryTests(unittest.TestCase):
     def test_synthetic_generator_writes_beside_script(self):
         generator = (EXAMPLES / "01-info" / "generate.py").read_text(encoding="utf-8")
         self.assertIn("Path(__file__).resolve().parent / \"synthetic.txt\"", generator)
+        self.assertIn("Path(sys.argv[1]).expanduser().resolve()", generator)
+        self.assertIn("output.parent.mkdir(parents=True, exist_ok=True)", generator)
 
     def test_info_example_avoids_pipefail_prone_output_truncation(self):
         script = (EXAMPLES / "01-info" / "info.sh").read_text(encoding="utf-8")
@@ -37,7 +39,9 @@ class ExampleInventoryTests(unittest.TestCase):
     def test_pipeline_input_and_output_are_reproducible(self):
         import json
         pipeline = json.loads((EXAMPLES / "03-pipeline-json" / "pipeline.json").read_text(encoding="utf-8"))
-        self.assertEqual(pipeline["pipeline"][0]["filename"], "../01-info/synthetic.txt")
+        self.assertEqual(pipeline["pipeline"][0]["filename"], "synthetic.txt")
+        self.assertIn('"$TMP_DIR/synthetic.txt"', script)
+        self.assertIn('cp "$DIR/pipeline.json" "$TMP_DIR/pipeline.json"', script)
         self.assertEqual(pipeline["pipeline"][-1]["filename"], "sorted.las")
         script = (EXAMPLES / "03-pipeline-json" / "run.sh").read_text(encoding="utf-8")
         self.assertIn("rows != sorted(rows)", script)
@@ -52,6 +56,9 @@ class ExampleInventoryTests(unittest.TestCase):
         self.assertIn("trap 'rm -rf", script)
         self.assertIn("pipeline.configured.json", script)
         self.assertIn("conninfo(", script)
+        self.assertIn('readers[0]["filename"] = os.environ["PDAL_FIXTURE"]', script)
+        self.assertIn('generate.py" "$TMP_DIR/synthetic.txt"', script)
+        self.assertNotIn('cp ../01-info/synthetic.txt "$DIR/synthetic.txt"', script)
         self.assertNotIn("echo \"$PGPASSWORD\"", script)
 
     def test_workflow_is_isolated_and_database_stage_is_explicitly_optional(self):
@@ -62,6 +69,8 @@ class ExampleInventoryTests(unittest.TestCase):
         self.assertIn("PDAL_PGPOINTCLOUD_PIPELINE", script)
         self.assertIn("SKIP: database stage not run", script)
         self.assertIn("values != sorted(values)", script)
+        self.assertIn('generate.py" "$TMP_DIR/synthetic.txt"', script)
+        self.assertNotIn('cp "$DIR/../01-info/synthetic.txt" "$TMP_DIR/synthetic.txt"', script)
 
     def test_each_pattern_has_documentation_and_artifact(self):
         for name in sorted(EXPECTED):
