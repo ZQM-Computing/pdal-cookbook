@@ -15,7 +15,7 @@ A **PDAL cookbook** for point-cloud pipelines, translation, and pgPointCloud ing
 
 ## Repository role and status
 
-**Status:** Active, public — first pattern pass written (design-only, gate 1 target; runtime validation pending). The table below lists what is written; no pattern has been runtime-validated yet.
+**Status:** Active, public — five design-stage patterns. CI validates Python/shell syntax, inventory, and static output contracts; PDAL 2.10.0 runtime behavior and pgPointCloud connectivity remain unverified.
 
 **What this repository is:** PDAL patterns — see the table below.
 
@@ -37,9 +37,9 @@ Geospatial engineers and LiDAR practitioners who move point clouds between files
 
 | # | Example | Status | What it demonstrates |
 |---|---------|--------|----------------------|
-| 01 | [01-info](examples/01-info/README.md) | Written (design-only) | Inspecting point clouds: counts, bounds, dimensions, and SRS |
+| 01 | [01-info](examples/01-info/README.md) | Written; 12-point count asserted | Inspecting point clouds: counts, bounds, dimensions, and SRS |
 | 02 | [02-translate](examples/02-translate/README.md) | Written (design-only) | Translating between LAS, LAZ, and text formats |
-| 03 | [03-pipeline-json](examples/03-pipeline-json/README.md) | Written (design-only) | Writing and running PDAL pipeline JSON files |
+| 03 | [03-pipeline-json](examples/03-pipeline-json/README.md) | Written; count/order assertions added | Writing and running PDAL pipeline JSON files |
 | 04 | [04-pgpointcloud-writer](examples/04-pgpointcloud-writer/README.md) | Written (design-only) | Writing point-cloud patches into pgPointCloud (see pgpointcloud-cookbook) |
 | 05 | [05-full-workflow](examples/05-full-workflow/README.md) | Written (design-only) | End-to-end: file → pipeline → database |
 
